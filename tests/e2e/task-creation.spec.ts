@@ -11,8 +11,8 @@ test.describe('Task Creation & Lifecycle Flow', () => {
   const testPassword = process.env.TEST_PASSWORD || 'Appleseed90!';
   const baseUrl = 'https://studio.autonomyai.io/';
 
-  // Session cookie from manual login
-  const sessionCookie = 'aid=93d2fcb7-1646-4b91-aee7-818cd83dde94&logs=1&id=43460027-227e-4b99-bde6-f3c61155ed1c&created=1776180994002&expire=1776181894002';
+  // Session cookie from environment variable
+  const sessionCookie = process.env.TEST_SESSION_COOKIE || 'aid=93d2fcb7-1646-4b91-aee7-818cd83dde94&logs=1&id=43460027-227e-4b99-bde6-f3c61155ed1c&created=1776180994002&expire=1776181894002';
 
   test('should ACTUALLY log in with valid credentials', async ({ page, context }) => {
     console.log('\n🚀 REAL LOGIN TEST');
