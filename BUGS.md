@@ -1,215 +1,221 @@
-# Bug & UX Report - Autonomy AI Studio
+# 🐛 Bug & UX Report - Autonomy AI Studio
 
-## Testing Session: April 14, 2026
+## 📋 Testing Summary
 **Product:** Autonomy AI Studio (studio.autonomyai.io)  
-**Tested By:** QA Evaluation  
-**Test Environment:** Production
+**Tested:** April 14, 2026  
+**Tester:** QA Evaluation  
+**Environment:** Production
 
 ---
 
-## Issue #1: Dark Mode Toggle Component Doesn't Change Theme
+## 🚨 Issue #1: Dark Mode Toggle Doesn't Work
 
-**Title:** Dark Mode Toggle button in header does not switch between light and dark themes
+**Title:** Dark Mode Toggle button in header doesn't change theme ❌
 
-**Severity:** 🔴 **Major** — Core UX feature doesn't work as intended
+**Severity:** 🔴 **Critical**
 
 **Steps to Reproduce:**
 1. Log into Autonomy AI Studio
-2. Create a new project by connecting a GitHub repository
-3. Wait for project initialization to complete
-4. Look at the top navbar header
-5. Locate the dark mode toggle button (sun/moon icon)
-6. Click the toggle button to switch themes
-7. Observe the app behavior
+2. Initialize a project (connect GitHub repo, wait for completion)
+3. Look at the top navbar
+4. Find the dark mode toggle button (sun/moon icon)
+5. Click it multiple times
+6. Observe nothing happens
 
-**Expected Behavior:**
-- When the toggle button is clicked, the entire app theme should switch instantly
-- If currently in light mode, clicking should switch to dark mode
-- If currently in dark mode, clicking should switch to light mode
-- The toggle icon should update (sun ↔ moon)
-- The existing theme dropdown selector should stay in sync with the toggle
-- Theme preference should persist on page reload
+**Expected Behavior:** 🎯
+- ✅ Theme switches instantly between light ↔ dark
+- ✅ Icon changes (sun → moon or vice versa)
+- ✅ All page colors update smoothly
+- ✅ Preference persists after page reload
 
-**Actual Behavior:**
-- Clicking the toggle button has no visible effect
-- The theme does not change
-- Neither light mode nor dark mode is activated
-- The toggle appears to be non-functional
-- No console errors visible to the user
+**Actual Behavior:** 😞
+- ❌ Button appears to work (clickable) but does nothing
+- ❌ Theme doesn't change at all
+- ❌ No visual feedback to user
+- ❌ No error messages (fails silently)
 
-**Environment:**
-- Browser: Chrome/Edge (exact version from recording: TBD)
-- App URL: studio.autonomyai.io
-- Session: Active project with initialization complete
+**User Impact:** 
+Users trying to use dark mode get frustrated and must use the clunky dropdown menu instead.
 
-**Evidence:**
-- Recording: `screenshots:recordings/theme change.mov` shows multiple click attempts with no theme change
-
-**Root Cause Analysis (Suspected):**
-- The `setTheme()` function may not be wired up correctly in the dark-mode-toggle component
-- The server action `action/set-theme` route may not be responding correctly
-- Theme context may not be propagating to the DOM/CSS classes
-- Cookie persistence may be failing silently
-
-**Workaround:**
-- Use the full theme selector dropdown (located to the right of the toggle)
-- Select "Dark" or "Light" from the full theme menu
+**Workaround:** 🔧
+Use the full theme selector dropdown to the right of the broken toggle
 
 ---
 
-## Issue #2: Existing Theme Dropdown Selector Works, But Toggle Is Inconsistent
+## 🔄 Issue #2: Theme Toggle Not Synced with Dropdown
 
-**Title:** Theme selector dropdown works but toggle button state doesn't sync with actual theme
+**Title:** Toggle icon doesn't reflect actual theme state
 
-**Severity:** 🟡 **Major** — Confusing UX; button state vs. actual theme mismatch
+**Severity:** 🟡 **Major**
 
 **Steps to Reproduce:**
-1. Log in and initialize a project
-2. Use the full theme selector dropdown (right of the broken toggle) to change to "Dark" theme
-3. Observe that the app successfully changes to dark mode
-4. Now look at the toggle button's icon (sun/moon)
-5. The toggle icon may not reflect the actual current theme
+1. Log in to a project
+2. Change theme using the dropdown selector to "Dark"
+3. App switches to dark mode successfully
+4. Look at the toggle button's icon
+5. Icon still shows the old state
 
-**Expected Behavior:**
-- The toggle button icon should always match the current theme state
-- If dark mode is active, the moon icon should be visible
-- If light mode is active, the sun icon should be visible
-- Icon should update immediately after using either the toggle or the dropdown selector
+**Expected Behavior:** 🎯
+- ✅ Toggle icon always shows current theme
+- ✅ When dark mode is on → moon icon visible
+- ✅ When light mode is on → sun icon visible
+- ✅ Icon updates whether theme changed via toggle OR dropdown
 
-**Actual Behavior:**
-- Toggle button icon does not update when theme is changed via the dropdown
-- Icon state becomes out-of-sync with actual theme
-- This suggests the component is not properly reading from the ThemeContext
+**Actual Behavior:** 😞
+- ❌ Toggle icon doesn't update when theme changes
+- ❌ Icon gets out-of-sync with real theme
+- ❌ Confusing for users (what mode am I in?)
 
-**Impact:**
-- Users cannot trust the toggle as a visual indicator of the current theme
-- Reduces usability and creates confusion about which mode is active
+**User Impact:**
+Users can't trust the toggle button as a visual indicator of current theme.
 
 ---
 
-## Issue #3: Theme Preference Not Persisting After Page Reload
+## 💾 Issue #3: Theme Preference Doesn't Save
 
-**Title:** Selected theme preference resets to default after page refresh
+**Title:** Theme resets to light every time page reloads
 
-**Severity:** 🟡 **Major** — Data loss/session management issue
+**Severity:** 🟡 **Major**
 
 **Steps to Reproduce:**
-1. Log into the app and initialize a project
-2. Use the theme selector to change to "Dark" theme
-3. Verify the app switches to dark mode
-4. Reload the page (Cmd+R or F5)
-5. Observe the theme after reload
+1. Log in and open a project
+2. Change theme to Dark using dropdown
+3. Confirm app shows dark mode
+4. Reload page (Cmd+R or F5)
+5. App loads... back to light mode 😤
 
-**Expected Behavior:**
-- The previously selected theme (dark mode) should persist
-- User should see the same theme they set before the reload
-- Cookie or localStorage should store the preference
+**Expected Behavior:** 🎯
+- ✅ Theme preference is saved (cookie or localStorage)
+- ✅ When user refreshes, their choice is remembered
+- ✅ Theme loads before page render (no flash)
 
-**Actual Behavior:**
-- The app reverts to light mode after page reload
-- Theme preference is not being saved/persisted
-- OR preference is saved but not being read on app initialization
+**Actual Behavior:** 😞
+- ❌ Theme resets to light mode on every reload
+- ❌ Preference not being saved at all
+- ❌ Frustrating user experience
 
-**Environment:**
-- Tested in Chrome/Edge with cookies enabled
-- Session is still active (user is not logged out)
-
-**Root Cause Analysis (Suspected):**
-- Server-side cookie persistence (`action/set-theme`) may not be working
-- Client-side session storage may not be reading the saved preference
-- Timing issue: theme preference being read before it's written to storage
-
-**Workaround:**
-- Users must reset their theme preference each time they reload the page
+**User Impact:**
+Users must set theme preference every single time they reload. Annoying.
 
 ---
 
-## Issue #4: Forgot Password API Returns 500 Error for Gmail Accounts
+## 🔐 Issue #4: Password Reset API Crashes (500 Error)
 
-**Title:** Forgot password endpoint returns 500 Internal Server Error
+**Title:** Forgot password completely broken for Gmail/OAuth accounts
 
-**Severity:** 🔴 **Critical** — Authentication/account recovery is completely broken
+**Severity:** 🔴 **Critical** ⚠️ **SECURITY ISSUE**
 
 **Steps to Reproduce:**
-1. Navigate to login page at https://studio.autonomyai.io/
-2. Click on **"Forgot password?"** link
-3. Enter a Gmail email address (e.g., `trashneak@gmail.com`)
-4. Click **"Send reset link"** or equivalent button
-5. Observe the error
+1. Go to https://studio.autonomyai.io/
+2. Click "Forgot password?"
+3. Enter Gmail address (e.g., trashneak@gmail.com)
+4. Click "Send reset link"
+5. Watch the error... 💥
 
-**Expected Behavior:**
-- Password reset email should be sent to the user's inbox
-- User should see confirmation message: "Check your email for password reset link"
-- No server errors should occur
-- Email should arrive within 1-5 minutes
+**Expected Behavior:** 🎯
+- ✅ Reset email sent to inbox
+- ✅ User sees success message
+- ✅ User can click email link and reset password
 
-**Actual Behavior:**
-- Request fails with HTTP 500 Internal Server Error
-- User sees error message or blank page
-- No reset email is sent
-- Backend is throwing an unhandled exception
-
-**API Details:**
+**Actual Behavior:** 😞
 ```
-Request URL: https://api.prod.autonomyai.io/auth/v1/oauth/user/cognito/password/forgot
-Request Method: POST
-Status Code: 500 Internal Server Error
-Content-Type: application/json
-Referrer Policy: strict-origin-when-cross-origin
+❌ HTTP 500 Internal Server Error
+❌ API: https://api.prod.autonomyai.io/auth/v1/oauth/user/cognito/password/forgot
+❌ No email sent
+❌ User completely locked out
 ```
 
-**Environment:**
-- Browser: Chrome/Edge
-- App URL: https://studio.autonomyai.io/
-- Test Email: Gmail account (trashneak@gmail.com)
-- Session: Unauthenticated (on login page)
+**User Impact:** 🚨 SEVERE
+- Users with Gmail accounts **cannot recover forgotten passwords**
+- They're permanently locked out
+- Affects ALL OAuth providers (Google, GitHub, etc.)
 
-**Root Cause Analysis (Suspected):**
-- Cognito integration may not handle Gmail OAuth accounts correctly
-- Password reset endpoint may not support OAuth-connected accounts
-- Email service may be misconfigured or have invalid credentials
-- Database query for user lookup may be failing
-- CORS or authentication headers may be missing/incorrect
-
-**Impact:**
-- Users with Gmail accounts cannot reset forgotten passwords
-- Account recovery flow is broken for OAuth users
-- Likely affects all OAuth providers (Google, GitHub, etc.)
-- Users may be permanently locked out if they forget passwords
-
-**Workaround:**
-- None available - users cannot access their accounts
-- May require support team intervention to manually reset password
-
-**Recommendation:**
-- Immediately investigate Cognito OAuth integration
-- Check email service configuration and credentials
-- Add error logging to identify exact failure point
-- Test password reset with all OAuth providers
-- Add proper error handling and user-friendly error messages
+**Root Cause (Suspected):**
+- Cognito OAuth integration broken
+- Backend not handling OAuth users correctly
 
 ---
 
-## Summary
+## 📄 Issue #5: Projects Page Completely Broken
 
-| Issue # | Title | Severity | Blocker? | Status |
-|---------|-------|----------|----------|--------|
-| 1 | Dark Mode Toggle doesn't change theme | Major | Yes | New |
-| 2 | Toggle icon doesn't sync with actual theme | Major | Yes | New |
-| 3 | Theme preference not persisting | Major | Yes | New |
-| 4 | Forgot password API returns 500 error | Critical | Yes | New |
+**Title:** /projects/ page shows nothing (blank page)
 
-### Recommended Fix Priority
-1. **Immediate (P0):** Issue #4 - Fix forgot password API (authentication is broken!)
-2. **Immediate (P0):** Issue #1 - Fix the toggle button functionality (core UX feature)
-3. **High (P1):** Issue #3 - Fix theme persistence (affects all users)
-4. **High (P1):** Issue #2 - Fix icon sync (UX clarity issue)
+**Severity:** 🔴 **Critical**
 
-### Test Coverage Recommendations
-- Add automated E2E tests for theme switching via toggle
-- Add tests for theme persistence across page reloads
-- Add tests for password reset with Gmail/OAuth accounts
-- Add tests for password reset error handling
-- Add visual regression tests for theme-dependent styling
-- Add API health checks for critical endpoints
+**Steps to Reproduce:**
+1. Log in
+2. Navigate to https://studio.autonomyai.io/projects/
+3. Stare at blank page... 😑
+
+**Expected Behavior:** 🎯
+- ✅ See list of all your projects
+- ✅ Project cards show name, status, repo info
+- ✅ Can click to open or manage projects
+- ✅ "Create new project" button visible
+
+**Actual Behavior:** 😞
+- ❌ Page is completely blank
+- ❌ No projects displayed (even though they exist!)
+- ❌ No navigation options
+- ❌ Loading forever or error state
+
+**User Impact:**
+Projects exist but users can't view them from the /projects/ hub. Forces users to use workarounds.
+
+**Workaround:** 🔧
+- Access projects from dashboard home
+- Use direct project URLs if you know them
+- Use sidebar navigation
+
+---
+
+## 📊 Summary Table
+
+| # | Issue | Severity | Type | Status |
+|---|-------|----------|------|--------|
+| 1 | 🌓 Dark Mode Toggle Broken | 🔴 Critical | Feature Bug | 🆕 New |
+| 2 | 🔄 Toggle Icon Out-of-Sync | 🟡 Major | UI Bug | 🆕 New |
+| 3 | 💾 Theme Not Saved | 🟡 Major | UX Bug | 🆕 New |
+| 4 | 🔐 Password Reset (500 Error) | 🔴 Critical | Security | 🆕 New |
+| 5 | 📄 Projects Page Blank | 🔴 Critical | Navigation | 🆕 New |
+
+---
+
+## ⚡ Fix Priority
+
+### 🔴 P0 - CRITICAL (Do ASAP!)
+1. **Issue #4** - Password reset broken = users locked out forever 🚨
+2. **Issue #5** - Projects page broken = navigation destroyed 🗺️
+3. **Issue #1** - Dark mode toggle = broken feature 🌓
+
+### 🟡 P1 - HIGH (Soon!)
+4. **Issue #3** - Theme not saving = annoying but not blocking 💾
+5. **Issue #2** - Toggle icon out of sync = confusing 🔄
+
+---
+
+## 💡 Recommendations
+
+✅ **Immediate Actions:**
+- [ ] Investigate Cognito OAuth password reset endpoint
+- [ ] Check /projects/ API endpoint health
+- [ ] Debug dark mode toggle component wiring
+- [ ] Add error logging to see failures
+
+✅ **Testing:**
+- [ ] Add E2E tests for theme switching
+- [ ] Add tests for theme persistence
+- [ ] Test password reset with Gmail/GitHub accounts
+- [ ] Monitor /projects/ page performance
+
+✅ **User Communication:**
+- [ ] Let users know about password reset issue
+- [ ] Document workaround for projects page
+- [ ] Let users know about dark mode limitations
+
+---
+
+**Last Updated:** April 14, 2026  
+**Status:** 🆕 Ready for dev team review  
+**Estimated Impact:** High - affects core features
 
