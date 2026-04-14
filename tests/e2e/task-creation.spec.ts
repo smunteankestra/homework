@@ -13,20 +13,11 @@ import { LoginPage, DashboardPage, ProjectPage } from '../pages';
  */
 
 test.describe('Task Creation & Lifecycle Flow', () => {
-  let loginPage: LoginPage;
-  let dashboardPage: DashboardPage;
-  let projectPage: ProjectPage;
-
-  test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
-    dashboardPage = new DashboardPage(page);
-    projectPage = new ProjectPage(page);
-  });
-
   test('should log in with valid credentials', async ({ page }) => {
     // ARRANGE
     const testEmail = process.env.TEST_EMAIL || 'test@example.com';
     const testPassword = process.env.TEST_PASSWORD || 'password123';
+    const loginPage = new LoginPage(page);
 
     // ACT
     await loginPage.goto();
@@ -44,6 +35,9 @@ test.describe('Task Creation & Lifecycle Flow', () => {
     // ARRANGE
     const testEmail = process.env.TEST_EMAIL || 'test@example.com';
     const testPassword = process.env.TEST_PASSWORD || 'password123';
+    const loginPage = new LoginPage(page);
+    const dashboardPage = new DashboardPage(page);
+    const projectPage = new ProjectPage(page);
 
     // ACT - Login
     await loginPage.goto();
@@ -69,6 +63,9 @@ test.describe('Task Creation & Lifecycle Flow', () => {
     const testEmail = process.env.TEST_EMAIL || 'test@example.com';
     const testPassword = process.env.TEST_PASSWORD || 'password123';
     const taskPrompt = 'Create a simple button component with hover effects and click handlers';
+    const loginPage = new LoginPage(page);
+    const dashboardPage = new DashboardPage(page);
+    const projectPage = new ProjectPage(page);
 
     // ACT - Login and navigate to project
     await loginPage.goto();
@@ -95,6 +92,9 @@ test.describe('Task Creation & Lifecycle Flow', () => {
     const testEmail = process.env.TEST_EMAIL || 'test@example.com';
     const testPassword = process.env.TEST_PASSWORD || 'password123';
     const taskPrompt = 'Build a responsive card component with image, title, and description';
+    const loginPage = new LoginPage(page);
+    const dashboardPage = new DashboardPage(page);
+    const projectPage = new ProjectPage(page);
 
     // ACT - Login and create task
     await loginPage.goto();
@@ -124,6 +124,9 @@ test.describe('Task Creation & Lifecycle Flow', () => {
     const testEmail = process.env.TEST_EMAIL || 'test@example.com';
     const testPassword = process.env.TEST_PASSWORD || 'password123';
     const taskPrompt = 'Create a simple form with name and email inputs';
+    const loginPage = new LoginPage(page);
+    const dashboardPage = new DashboardPage(page);
+    const projectPage = new ProjectPage(page);
 
     // ACT - Login, navigate, and create task
     await loginPage.goto();
@@ -152,6 +155,9 @@ test.describe('Task Creation & Lifecycle Flow', () => {
     // ARRANGE
     const testEmail = process.env.TEST_EMAIL || 'test@example.com';
     const testPassword = process.env.TEST_PASSWORD || 'password123';
+    const loginPage = new LoginPage(page);
+    const dashboardPage = new DashboardPage(page);
+    const projectPage = new ProjectPage(page);
 
     // ACT - Login and navigate
     await loginPage.goto();

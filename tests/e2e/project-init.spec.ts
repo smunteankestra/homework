@@ -12,14 +12,6 @@ import { LoginPage, DashboardPage } from '../pages';
  */
 
 test.describe('Project Initialization Flow (Bonus)', () => {
-  let loginPage: LoginPage;
-  let dashboardPage: DashboardPage;
-
-  test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
-    dashboardPage = new DashboardPage(page);
-  });
-
   test.skip('should initialize a project with repo connection', async ({ page }) => {
     // NOTE: This test is marked as .skip() because it requires:
     // 1. Access to GitHub authentication
@@ -35,6 +27,8 @@ test.describe('Project Initialization Flow (Bonus)', () => {
     const testEmail = process.env.TEST_EMAIL || 'test@example.com';
     const testPassword = process.env.TEST_PASSWORD || 'password123';
     const testRepoName = process.env.TEST_REPO_NAME || 'jira-clone'; // From daniserrano7/jira-clone
+    const loginPage = new LoginPage(page);
+    const dashboardPage = new DashboardPage(page);
 
     // ACT - Login
     await loginPage.goto();
@@ -82,6 +76,8 @@ test.describe('Project Initialization Flow (Bonus)', () => {
     // ARRANGE
     const testEmail = process.env.TEST_EMAIL || 'test@example.com';
     const testPassword = process.env.TEST_PASSWORD || 'password123';
+    const loginPage = new LoginPage(page);
+    const dashboardPage = new DashboardPage(page);
 
     // ACT - Login
     await loginPage.goto();
@@ -104,6 +100,8 @@ test.describe('Project Initialization Flow (Bonus)', () => {
     // ARRANGE
     const testEmail = process.env.TEST_EMAIL || 'test@example.com';
     const testPassword = process.env.TEST_PASSWORD || 'password123';
+    const loginPage = new LoginPage(page);
+    const dashboardPage = new DashboardPage(page);
 
     // ACT - Login and navigate to dashboard
     await loginPage.goto();

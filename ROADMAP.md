@@ -215,7 +215,7 @@ E2E tests:
 **Why medium?** One-time setup, but critical when needed.
 
 **Scope:**
-- Connect GitHub repo
+- Connect GitHub repo (e.g., smunteankestra/jira-clone)
 - Run auto-detect
 - Select stack/framework
 - Initialization status tracking
@@ -226,7 +226,7 @@ E2E tests:
 
 **Test Plan:**
 ```typescript
-- Test repo selection flow
+- Test repo selection flow (smunteankestra/jira-clone)
 - Test auto-detect completes successfully
 - Test initialization status updates
 - Test project becomes ready after init

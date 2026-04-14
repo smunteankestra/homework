@@ -8,3 +8,8 @@ build/
 *.mov
 *.mp4
 
+# Playwright test artifacts
+playwright-report/
+test-results/
+.playwright/
+

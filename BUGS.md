@@ -124,6 +124,72 @@
 
 ---
 
+## Issue #4: Forgot Password API Returns 500 Error for Gmail Accounts
+
+**Title:** Forgot password endpoint returns 500 Internal Server Error
+
+**Severity:** 🔴 **Critical** — Authentication/account recovery is completely broken
+
+**Steps to Reproduce:**
+1. Navigate to login page at https://studio.autonomyai.io/
+2. Click on **"Forgot password?"** link
+3. Enter a Gmail email address (e.g., `trashneak@gmail.com`)
+4. Click **"Send reset link"** or equivalent button
+5. Observe the error
+
+**Expected Behavior:**
+- Password reset email should be sent to the user's inbox
+- User should see confirmation message: "Check your email for password reset link"
+- No server errors should occur
+- Email should arrive within 1-5 minutes
+
+**Actual Behavior:**
+- Request fails with HTTP 500 Internal Server Error
+- User sees error message or blank page
+- No reset email is sent
+- Backend is throwing an unhandled exception
+
+**API Details:**
+```
+Request URL: https://api.prod.autonomyai.io/auth/v1/oauth/user/cognito/password/forgot
+Request Method: POST
+Status Code: 500 Internal Server Error
+Content-Type: application/json
+Referrer Policy: strict-origin-when-cross-origin
+```
+
+**Environment:**
+- Browser: Chrome/Edge
+- App URL: https://studio.autonomyai.io/
+- Test Email: Gmail account (trashneak@gmail.com)
+- Session: Unauthenticated (on login page)
+
+**Root Cause Analysis (Suspected):**
+- Cognito integration may not handle Gmail OAuth accounts correctly
+- Password reset endpoint may not support OAuth-connected accounts
+- Email service may be misconfigured or have invalid credentials
+- Database query for user lookup may be failing
+- CORS or authentication headers may be missing/incorrect
+
+**Impact:**
+- Users with Gmail accounts cannot reset forgotten passwords
+- Account recovery flow is broken for OAuth users
+- Likely affects all OAuth providers (Google, GitHub, etc.)
+- Users may be permanently locked out if they forget passwords
+
+**Workaround:**
+- None available - users cannot access their accounts
+- May require support team intervention to manually reset password
+
+**Recommendation:**
+- Immediately investigate Cognito OAuth integration
+- Check email service configuration and credentials
+- Add error logging to identify exact failure point
+- Test password reset with all OAuth providers
+- Add proper error handling and user-friendly error messages
+
+---
+
 ## Summary
 
 | Issue # | Title | Severity | Blocker? | Status |
@@ -131,14 +197,19 @@
 | 1 | Dark Mode Toggle doesn't change theme | Major | Yes | New |
 | 2 | Toggle icon doesn't sync with actual theme | Major | Yes | New |
 | 3 | Theme preference not persisting | Major | Yes | New |
+| 4 | Forgot password API returns 500 error | Critical | Yes | New |
 
 ### Recommended Fix Priority
-1. **Immediate (P0):** Issue #1 - Fix the toggle button functionality (core feature is broken)
-2. **High (P1):** Issue #3 - Fix theme persistence (affects all users)
-3. **High (P1):** Issue #2 - Fix icon sync (UX clarity issue)
+1. **Immediate (P0):** Issue #4 - Fix forgot password API (authentication is broken!)
+2. **Immediate (P0):** Issue #1 - Fix the toggle button functionality (core UX feature)
+3. **High (P1):** Issue #3 - Fix theme persistence (affects all users)
+4. **High (P1):** Issue #2 - Fix icon sync (UX clarity issue)
 
 ### Test Coverage Recommendations
 - Add automated E2E tests for theme switching via toggle
 - Add tests for theme persistence across page reloads
+- Add tests for password reset with Gmail/OAuth accounts
+- Add tests for password reset error handling
 - Add visual regression tests for theme-dependent styling
+- Add API health checks for critical endpoints
 
