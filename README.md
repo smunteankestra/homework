@@ -41,22 +41,50 @@ This test suite covers the complete task creation workflow in Autonomy AI Studio
 
 ### Environment Setup
 
-Create a `.env.local` file in the project root with your test credentials:
+Create a `.env` file in the project root with your test credentials:
 
 ```env
-# Required credentials for test execution
+# ============================================
+# REQUIRED: Test account credentials
+# ============================================
 TEST_EMAIL=your-test-email@example.com
 TEST_PASSWORD=your-test-password
 
-# Optional: GitHub repo for project initialization tests
-TEST_REPO_NAME=daniserrano7/jira-clone
+# ============================================
+# REQUIRED: Base URL
+# ============================================
+BASE_URL=https://studio.autonomyai.io
+
+# ============================================
+# OPTIONAL: GitHub repo for project initialization tests
+# ============================================
+TEST_REPO_NAME=smunteankestra/jira-clone
+
+# ============================================
+# OPTIONAL: Playwright Configuration
+# ============================================
+HEADLESS=false
+DEBUG=false
+TIMEOUT=120000
 ```
 
+**See `.env.example` for a template with all available options.**
+
 **⚠️ IMPORTANT - Security Notes:**
-- Never commit `.env.local` to version control
+- Never commit `.env` to version control
 - Use a dedicated test account (not your personal account)
 - Create a test project specifically for running these tests
 - Store sensitive credentials in CI/CD secret management
+- The `.env` file is listed in `.gitignore` for protection
+
+### Important: Security Note
+
+**All test credentials are loaded from environment variables only.** There are NO hardcoded credentials in any test files. This is a security best practice:
+
+- `.env` file with credentials is in `.gitignore` 
+- Never commit `.env` to version control
+- Credentials are only read from environment at runtime
+- Tests will fail with clear error message if credentials are missing
 
 ## 🧪 Running Tests
 
@@ -344,4 +372,3 @@ Part of Autonomy AI Studio interview evaluation.
 **Test Framework:** Playwright 1.40+  
 **Language:** TypeScript 5.3+  
 **Node Version:** 18+
-

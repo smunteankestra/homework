@@ -1,14 +1,12 @@
 import { defineConfig, devices } from '@playwright/test';
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// require('dotenv').config();
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+const baseURL = process.env.BASE_URL || 'https://studio.autonomyai.io';
+const headless = process.env.HEADLESS !== 'false';
+
 export default defineConfig({
   testDir: './tests/e2e',
   /* Run tests in files in parallel */
@@ -24,11 +22,9 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'https://studio.autonomyai.io',
+    baseURL: baseURL,
     /* Run in headed mode to see browser */
-    headless: false,
-    /* Slow down execution to see what's happening */
-    slowMo: 1000,
+    headless: headless,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
@@ -62,7 +58,7 @@ export default defineConfig({
   /* Global timeout for each test */
   timeout: 60 * 1000,
 
-  /* Global setup/teardown if needed */
-  // globalSetup: require.resolve('./tests/global-setup.ts'),
+  /* Global setup/teardown */
+  globalSetup: require.resolve('./tests/global-setup.ts'),
 });
 

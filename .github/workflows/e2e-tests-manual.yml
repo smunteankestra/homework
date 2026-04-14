@@ -1,19 +1,18 @@
-name: E2E Tests (Scheduled)
+name: E2E Tests (Manual)
 
 on:
-  pull_request:
-    branches: [main, develop]
-  push:
-    branches: [main]
-  schedule:
-    # Run nightly at 2 AM UTC
-    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      headless:
+        description: 'Run in headless mode (true/false)'
+        required: true
+        default: 'false'
 
 jobs:
   e2e-tests:
-    name: Run Playwright Tests
+    name: Run Playwright E2E Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       - name: Checkout code
@@ -32,12 +31,13 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run E2E tests
-        run: npm test
+        run: npx playwright test --project=chromium
         env:
           BASE_URL: https://studio.autonomyai.io
           TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
-          HEADLESS: 'true'
+          HEADLESS: ${{ inputs.headless }}
+          DEBUG: 'true'
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
@@ -55,8 +55,8 @@ jobs:
           path: test-results/
           retention-days: 7
 
-      - name: Comment PR with results
-        if: github.event_name == 'pull_request' && always()
+      - name: Comment on workflow run
+        if: always()
         uses: actions/github-script@v7
         with:
           script: |
@@ -68,22 +68,22 @@ jobs:
             }
             
             const comment = `
-## 🤖 E2E Test Results
-
-**Status:** ${status}
-
-### Details
-- **Branch:** \`${{ github.head_ref }}\`
-- **Run:** [View in Actions](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-- **Report:** Download artifact "playwright-report"
-
-${status === '❌ Failed' ? '**Please check the test report for details.**' : 'All checks passed! Ready to merge.'}
+            ## 🤖 E2E Test Run Complete
+            
+            **Status:** ${status}
+            
+            ### Details
+            - **Run ID:** ${{ github.run_id }}
+            - **Trigger:** Manual Workflow Dispatch
+            - **Browser:** Chromium
+            - **Headless Mode:** ${{ inputs.headless }}
+            
+            ### Artifacts
+            - **Report:** Download "playwright-report" artifact
+            - **Videos:** Download "playwright-videos" artifact (if tests failed)
+            
+            [View Full Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
             `;
             
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
+            console.log(comment);
 

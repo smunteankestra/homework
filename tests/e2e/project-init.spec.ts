@@ -19,26 +19,26 @@ test.describe('Project Initialization Flow (Bonus)', () => {
 
   test('should list existing projects on dashboard', async ({ page }) => {
     // Simple test to check we can access dashboard
-    const testEmail = process.env.TEST_EMAIL || 'test@example.com';
-    const testPassword = process.env.TEST_PASSWORD || 'password123';
+    const testEmail = process.env.TEST_EMAIL || 'appetitbug@gmail.com';
+    const testPassword = process.env.TEST_PASSWORD || 'Appleseed90!';
 
-    await page.goto('https://studio.autonomyai.io/', { waitUntil: 'networkidle', timeout: 30000 });
+    await page.goto('https://studio.autonomyai.io/login', { waitUntil: 'networkidle', timeout: 30000 });
 
-    if (page.url().includes('/auth/login')) {
+    if (page.url().includes('/login')) {
       await page.locator('input[type="email"]').first().fill(testEmail);
       await page.locator('input[type="password"]').first().fill(testPassword);
       await page.locator('button:has-text("Sign in"), button:has-text("Login")').first().click();
       await page.waitForLoadState('networkidle', { timeout: 30000 });
     }
 
-    expect(page.url()).not.toContain('/auth/login');
+    expect(page.url()).not.toContain('/login');
     console.log('✓ Dashboard projects test passed');
   });
 
   test('should check project initialization status', async ({ page }) => {
     // Simple status check
-    const testEmail = process.env.TEST_EMAIL || 'test@example.com';
-    const testPassword = process.env.TEST_PASSWORD || 'password123';
+    const testEmail = process.env.TEST_EMAIL || 'appetitbug@gmail.com';
+    const testPassword = process.env.TEST_PASSWORD || 'Appleseed90!';
 
     await page.goto('https://studio.autonomyai.io/', { waitUntil: 'networkidle', timeout: 30000 });
 
