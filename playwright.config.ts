@@ -25,6 +25,10 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: 'https://studio.autonomyai.io',
+    /* Run in headed mode to see browser */
+    headless: false,
+    /* Slow down execution to see what's happening */
+    slowMo: 1000,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
