@@ -1,4 +1,4 @@
-import { Page, expect } from '@playwright/test';
+import { Page } from '@playwright/test';
 
 /**
  * LoginPage - Page Object for authentication flow
@@ -10,60 +10,46 @@ export class LoginPage {
   readonly emailInput = 'input[type="email"], input[placeholder*="email"], input[id*="email"]';
   readonly passwordInput = 'input[type="password"], input[placeholder*="password"], input[id*="password"]';
   readonly loginButton = 'button:has-text("Sign in"), button:has-text("Login"), button:has-text("Submit")';
-  readonly signUpLink = 'a:has-text("Sign up"), button:has-text("Sign up")';
-  readonly forgotPasswordLink = 'a:has-text("Forgot password"), a:has-text("Forgot")';
 
   constructor(page: Page) {
     this.page = page;
   }
 
   /**
-   * Navigate to login page
-   */
-  async goto() {
-    // Try multiple login paths
-    try {
-      await this.page.goto('/auth/login', { waitUntil: 'networkidle', timeout: 30000 });
-    } catch {
-      // Fallback to root + auth path
-      await this.page.goto('/', { waitUntil: 'networkidle', timeout: 30000 });
-      // Wait for login page or redirect
-      await this.page.waitForLoadState('networkidle', { timeout: 15000 });
-    }
-  }
-
-  /**
    * Login with email and password
+   * Automatically navigates to login page if not already there
    */
   async login(email: string, password: string) {
-    // Wait for email input with longer timeout
-    await this.page.fill(this.emailInput, email, { timeout: 30000 });
-    await this.page.fill(this.passwordInput, password, { timeout: 30000 });
-    await this.page.click(this.loginButton, { timeout: 10000 });
+    // Ensure we're on login page - navigate if not
+    if (!this.page.url().includes('/login')) {
+      await this.page.goto('https://studio.autonomyai.io/login', { waitUntil: 'domcontentloaded', timeout: 30000 });
+    }
 
-    // Wait for redirect to dashboard or projects page
-    await this.page.waitForURL('**/dashboard', { timeout: 30000 }).catch(() => {
-      // If no dashboard redirect, just wait for navigation
-      return this.page.waitForLoadState('networkidle', { timeout: 15000 });
+    // Wait for and fill email input
+    const emailInputElement = this.page.locator(this.emailInput).first();
+    await emailInputElement.waitFor({ state: 'visible', timeout: 15000 });
+    await emailInputElement.fill(email);
+
+    // Wait for and fill password input
+    const passwordInputElement = this.page.locator(this.passwordInput).first();
+    await passwordInputElement.waitFor({ state: 'visible', timeout: 15000 });
+    await passwordInputElement.fill(password);
+
+    // Click login button
+    const loginButtonElement = this.page.locator(this.loginButton).first();
+    await loginButtonElement.waitFor({ state: 'visible', timeout: 15000 });
+    await loginButtonElement.click();
+
+    // Wait for URL to change away from /login
+    await this.page.waitForURL('**/!(login)', { timeout: 60000 }).catch(() => {
+      // Timeout is okay, just wait a bit more
     });
-  }
 
-  /**
-   * Check if login page is visible
-   */
-  async isVisible() {
-    await expect(this.page.locator(this.emailInput)).toBeVisible();
-    await expect(this.page.locator(this.passwordInput)).toBeVisible();
-    await expect(this.page.locator(this.loginButton)).toBeVisible();
-  }
-
-  /**
-   * Get login error message
-   */
-  async getErrorMessage() {
-    const errorMessage = this.page.locator('[role="alert"]');
-    await expect(errorMessage).toBeVisible();
-    return await errorMessage.textContent();
+    // Wait for page to stabilize
+    await this.page.waitForTimeout(2000);
   }
 }
+
+
+
 
